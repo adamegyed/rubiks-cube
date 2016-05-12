@@ -1,2 +1,3 @@
 # Rubiks-Cube
-3d Rubik's Cube made in Java. Uses [lwjgl 3](https://lwjgl.org).
+3d Rubik's Cube made in Java. Uses lwjgl 3.
+[lwjgl.org](https://lwjgl.org)
