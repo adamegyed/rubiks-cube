@@ -10,7 +10,7 @@ package com.egyed.adam.rubikscube.engine;
 public class GameEngine implements Runnable{
 
     // Target Frames per Second
-    // Frames can be rendered faster than updates, and frames
+    // Frames can be rendered faster than updates
     // can be more inconsistent than updates
     public static final int TARGET_FPS = 75;
 
@@ -45,7 +45,7 @@ public class GameEngine implements Runnable{
     public void start() {
 
         // Avoids starting a second thread if on Mac
-        // Still requires -XstartOnFirstThread as JVM argument to start on mac
+        // Still requires -XstartOnFirstThread as JVM argument to start on mac properly
         String osName = System.getProperty("os.name");
         if ( osName.contains("Mac") ) {
             gameLoopThread.run();
@@ -107,7 +107,7 @@ public class GameEngine implements Runnable{
             // Render to the window
             render();
 
-            // Sync if not in vSync mode
+            // Sync time if not in vSync mode
             if (!mainWindow.isvSync()) {
                 sync();
             }
