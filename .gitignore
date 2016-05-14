@@ -1,8 +1,5 @@
 *.class
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
 # Package Files #
 *.jar
 *.war
@@ -12,8 +9,8 @@
 .classpath
 .idea/
 out/
-*.bluej
 *.iml
+*.bluej
 
 # Project Specific
 !lib/lwjgl.jar
