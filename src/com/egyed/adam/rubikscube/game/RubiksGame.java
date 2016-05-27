@@ -62,32 +62,19 @@ public class RubiksGame implements GameLogic {
         ArrayList<GameItem> itemList = new ArrayList<>();
 
 
-        for (int i = 0; i < 8; i++) {
-
-            int color = i;
-            while (color>5) color-=5;
-            GameItem center = CenterPiece.createCenterPiece(color);
-            center.setPosition(0.4f,0.2f*i,-2);
-            center.setRotationDegrees(i * 45,0,0);
+        for (int i = 0; i < 4; i++) {
+            GameItem center = CenterPiece.createCenterPiece(i);
+            center.setPosition(0,0,-2);
+            center.setRotationDegrees(i * 90,0,0);
             itemList.add(center);
             moving.add(center);
         }
-        for (int i = 0; i < 8; i++) {
 
-            int color = i;
-            while (color>5) color-=5;
-            GameItem center = CenterPiece.createCenterPiece(color);
-            center.setPosition(0,0,-2);
-            center.setRotationDegrees(0,i * 45,0);
-            itemList.add(center);
-            //moving[i] = center;
-        }
-
-        GameItem center = CenterPiece.createCenterPiece(4);
+        GameItem center = CenterPiece.createCenterPiece(Piece.ORANGE);
         center.setPosition(0,0,-2);
         center.setRotationDegrees(0,90,0);
         itemList.add(center);
-        GameItem center2 = CenterPiece.createCenterPiece(5);
+        GameItem center2 = CenterPiece.createCenterPiece(Piece.WHITE);
         center2.setPosition(0,0,-2);
         center2.setRotationDegrees(0,270,0);
         itemList.add(center2);
@@ -199,46 +186,6 @@ public class RubiksGame implements GameLogic {
         camera.movePosition(cameraInc.x * CAMERA_POS_STEP, cameraInc.y * CAMERA_POS_STEP, cameraInc.z * CAMERA_POS_STEP);
         camera.moveRotation(cameraRotInc.x * CAMERA_ROT_STEP, cameraRotInc.y * CAMERA_ROT_STEP, 0);
 
-        rotateXAngle = (float) Math.toRadians(1.5 * rotateXDirection);
-        rotateYAngle = (float) Math.toRadians(1.5 * rotateYDirection);
-        rotateZAngle = (float) Math.toRadians(1.5 * rotateZDirection);
-
-        Matrix4f rotationUpdate = new Matrix4f().identity();
-
-        if (rotateXAngle!=0) {
-            Matrix4f xRotation = new Matrix4f().identity();
-            float sinAlpha = (float) Math.sin(rotateXAngle);
-            float cosAlpha = (float) Math.cos(rotateXAngle);
-            xRotation.m11 = cosAlpha;
-            xRotation.m12 = -sinAlpha;
-            xRotation.m21 = sinAlpha;
-            xRotation.m22 = cosAlpha;
-
-            rotationUpdate.mul(xRotation);
-        }
-        if (rotateYAngle!=0) {
-            Matrix4f yRotation = new Matrix4f().identity();
-            float sinBeta = (float) Math.sin(rotateYAngle);
-            float cosBeta = (float) Math.cos(rotateYAngle);
-            yRotation.m00 = cosBeta;
-            yRotation.m02 = sinBeta;
-            yRotation.m20 = -sinBeta;
-            yRotation.m22 = cosBeta;
-
-            rotationUpdate.mul(yRotation);
-        }
-        if (rotateZAngle!=0) {
-            Matrix4f zRotation = new Matrix4f().identity();
-            float sinGamma = (float) Math.sin(rotateZAngle);
-            float cosGamma = (float) Math.cos(rotateZAngle);
-            zRotation.m00 = cosGamma;
-            zRotation.m01 = -sinGamma;
-            zRotation.m10 = sinGamma;
-            zRotation.m11 = cosGamma;
-
-            rotationUpdate.mul(zRotation);
-        }
-
 
 
         for (GameItem gameItem : moving) {
@@ -253,8 +200,7 @@ public class RubiksGame implements GameLogic {
 
 
             // Update rotations
-            //gameItem.addRotation((float) rotateXDirection, (float) rotateYDirection, (float) rotateZDirection);
-            gameItem.addRotation(rotationUpdate);
+            gameItem.addRotation(1.5f * rotateXDirection, 1.5f * rotateYDirection, 1.5f * rotateZDirection);
         }
     }
 
@@ -273,8 +219,4 @@ public class RubiksGame implements GameLogic {
         }
     }
 
-    public static void getRotationUpdate(float x, float y, float z) {
-
-
-    }
 }

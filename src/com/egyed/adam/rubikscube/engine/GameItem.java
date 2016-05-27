@@ -50,6 +50,30 @@ public class GameItem {
 
     public void setRotationDegrees(float x, float y, float z) {
         this.rotation = new Matrix4f();
+        this.rotation.mul(getRotationMultiplier(x,y,z));
+    }
+
+
+
+    public void addRotation(Matrix4f additionalRotation) {
+        Matrix4f additional = new Matrix4f(additionalRotation);
+        this.rotation = additional.mul(this.rotation);
+    }
+
+    public void addRotation(float x, float y, float z) {
+        Matrix4f additionalRotation = getRotationMultiplier(x,y,z);
+        this.rotation = additionalRotation.mul(this.rotation);
+
+    }
+
+    public Mesh getMesh() {
+        return mesh;
+    }
+
+    /**
+     * Get the additional rotation matrix, which should be multiplied by the current rotation matrix to get the new rotation matrix
+     */
+    public static Matrix4f getRotationMultiplier(float x, float y, float z) {
 
         float rotateXAngle = (float) Math.toRadians(x);
         float rotateYAngle = (float) Math.toRadians(y);
@@ -91,24 +115,9 @@ public class GameItem {
             rotationUpdate.mul(zRotation);
         }
 
-        this.rotation.mul(rotationUpdate);
+        return rotationUpdate;
+
+
     }
 
-    /*
-    public void addRotation(float x, float y, float z) {
-        this.rotation.x += x;
-        this.rotation.y += y;
-        this.rotation.z += z;
-    }*/
-
-
-
-    public void addRotation(Matrix4f additionalRotation) {
-        Matrix4f additional = new Matrix4f(additionalRotation);
-        this.rotation = additional.mul(this.rotation);
-    }
-
-    public Mesh getMesh() {
-        return mesh;
-    }
 }
