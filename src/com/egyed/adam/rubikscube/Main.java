@@ -16,7 +16,7 @@ public class Main {
 
         try {
             // Add lwjgl native libraries to the correct path
-            System.setProperty("org.lwjgl.librarypath","lib/native");
+            System.setProperty("org.lwjgl.librarypath", "lib/native");
 
             GameLogic gameLogic = new RubiksGame();
 
@@ -25,8 +25,7 @@ public class Main {
 
             gameEngine.start();
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
 
             e.printStackTrace();
             System.exit(-1);

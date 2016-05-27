@@ -9,7 +9,7 @@ package com.egyed.adam.rubikscube.engine;
 public interface GameLogic {
 
     // Game state initialization
-    void init() throws Exception;
+    void init(MainWindow mainWindow) throws Exception;
 
     // Input handling and responses
     void input(MainWindow mainWindow);
@@ -19,6 +19,8 @@ public interface GameLogic {
 
     // Render contents
     void render(MainWindow mainWindow);
+
+    void cleanup();
 
 
 

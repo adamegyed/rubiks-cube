@@ -32,6 +32,7 @@ public class MainWindow {
 
     private boolean resized;
     private boolean vSync;
+    private boolean shouldCameraReset;
 
     public MainWindow(String title, int width, int height, boolean vSync) {
         this.title = title;
@@ -39,6 +40,7 @@ public class MainWindow {
         this.height = height;
         this.vSync = vSync;
         this.resized = false;
+        shouldCameraReset = false;
 
     }
 
@@ -93,6 +95,9 @@ public class MainWindow {
                 if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
                     glfwSetWindowShouldClose(windowHandle, GL_TRUE);
                 }
+                if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE) {
+                    shouldCameraReset = true;
+                }
 
             }
         };
@@ -121,6 +126,11 @@ public class MainWindow {
 
         // Set window's clear color
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 
     }
@@ -173,6 +183,11 @@ public class MainWindow {
         glfwPollEvents();
     }
 
+    public boolean getShouldCameraReset() {
+        return shouldCameraReset;
+    }
 
-
+    public void setShouldCameraReset(boolean shouldCameraReset) {
+        this.shouldCameraReset = shouldCameraReset;
+    }
 }

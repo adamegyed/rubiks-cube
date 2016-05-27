@@ -64,13 +64,16 @@ public class GameEngine implements Runnable{
         catch (Exception e) {
             e.printStackTrace();
         }
+        finally {
+            gameLogic.cleanup();
+        }
 
     }
 
     protected void init() throws Exception {
         mainWindow.init();
         timer.init();
-        gameLogic.init();
+        gameLogic.init(mainWindow);
     }
 
     protected void gameLoop() {
@@ -130,6 +133,7 @@ public class GameEngine implements Runnable{
 
             } catch (InterruptedException ie) {
                 ie.printStackTrace();
+                System.exit(-1);
             }
         }
     }
