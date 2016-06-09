@@ -22,4 +22,6 @@ public class Piece extends GameItem {
     public Piece(Mesh mesh) {
         super(mesh);
     }
+
+
 }
