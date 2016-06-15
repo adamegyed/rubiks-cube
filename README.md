@@ -22,5 +22,12 @@ Z + X Raise and lower the Camara
 N + B adjust viewing angle left/right.
 F + V adjust viewing angle up/down.
 
-Thanks
+Y toggles wireframe
+H toggles culling
+
+Left Shift toggles slow camera
+
+Escape to quit
+
+Thanks, and have fun
 -Adam

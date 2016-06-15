@@ -11,6 +11,8 @@ import static org.lwjgl.opengl.GL30.*;
 
 /**
  * Created by Adam on 5/16/16.
+ * Handles creation and rendering of meshes with a given color
+ * Prepares VAO with 3 VBOs to hold Mesh's positions, color, and position index
  */
 public class Mesh {
 

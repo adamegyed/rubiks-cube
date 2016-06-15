@@ -6,6 +6,7 @@ import org.joml.Vector3f;
 
 /**
  * Created by Adam on 5/18/16.
+ * Utilities for manipulating a Mesh as an item
  */
 public class GameItem {
 

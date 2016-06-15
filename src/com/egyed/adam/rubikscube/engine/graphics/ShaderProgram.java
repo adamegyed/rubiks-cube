@@ -11,6 +11,7 @@ import static org.lwjgl.opengl.GL20.*;
 
 /**
  * Created by Adam on 5/12/16.
+ * Handles shader program creation and compiation
  */
 public class ShaderProgram {
 
@@ -74,11 +75,13 @@ public class ShaderProgram {
             throw new Exception("Error linking shader code: "+glGetShaderInfoLog(programId));
         }
 
-        //
+        // Validating shader code
+        // Should be removed before shipping
+        /*
         glValidateProgram(programId);
         if (glGetProgrami(programId, GL_VALIDATE_STATUS) == 0) {
             System.err.println("Warning validating shader code: "+glGetShaderInfoLog(programId));
-        }
+        }*/
 
 
     }

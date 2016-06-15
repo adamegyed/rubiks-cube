@@ -124,9 +124,6 @@ public class MainWindow {
 
         GL.createCapabilities();
 
-        // Set window's clear color
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
@@ -144,6 +141,10 @@ public class MainWindow {
      */
     public boolean isKeyPressed(int keyCode) {
         return glfwGetKey(windowHandle, keyCode) == GLFW_PRESS;
+    }
+
+    public boolean isKeyReleased(int keyCode) {
+        return glfwGetKey(windowHandle, keyCode) == GLFW_RELEASE;
     }
 
     public boolean windowShouldClose() {

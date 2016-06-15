@@ -6,6 +6,7 @@ import org.joml.Vector3f;
 
 /**
  * Created by Adam on 5/18/16.
+ * Handles translation of coordinate through single-point perspective projection, Camera location, and item location
  */
 public class Transformation {
 

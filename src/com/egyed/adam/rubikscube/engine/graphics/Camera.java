@@ -4,6 +4,7 @@ import org.joml.Vector3f;
 
 /**
  * Created by Adam on 5/18/16.
+ * Location tracking for a pseudo-camera
  */
 public class Camera {
 

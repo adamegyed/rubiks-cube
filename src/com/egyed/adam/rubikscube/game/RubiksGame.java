@@ -18,6 +18,7 @@ import java.util.Random;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL11.*;
 
 /**
  * Created by Adam on 5/11/16.
@@ -29,8 +30,6 @@ public class RubiksGame implements GameLogic {
 
     private GameItem[] gameItems;
 
-    private ArrayList<GameItem> moving = new ArrayList<GameItem>();
-
     private Camera camera;
 
     private PieceManager pieceManager;
@@ -40,36 +39,27 @@ public class RubiksGame implements GameLogic {
     private Matrix4f maneuverMultiplier;
     private LinkedList<Piece> piecesInManeuver;
 
-    private int scaleInc = 0;
-
-    private int rotateXDirection;
-    private int rotateYDirection;
-    private int rotateZDirection;
-
-    private float rotateXAngle;
-    private float rotateYAngle;
-    private float rotateZAngle;
-
     Random randGen = new Random();
-
 
     private final Vector3f cameraInc;
     private final Vector3f cameraRotInc;
 
+    private boolean wireframe = false;
+    private boolean wireframeMod = false;
+    private boolean culling = true;
+    private boolean cullingMod = false;
+
+    private boolean slowedCamera = false;
+    private boolean slowedCameraMod = false;
+
     // Distances each should move per step
     private static final float CAMERA_POS_STEP = 0.05f;
-    private static final float CAMERA_ROT_STEP = 1.5f;
+    private static final float CAMERA_ROT_STEP = 2.0f;
     private static final float SHIFT_STEP = 3f;
 
     // TYPES OF MANEUVERS
     private static final int SHIFT = 0;
     private static final int ROTATE = 1;
-
-
-
-
-
-
 
 
     public RubiksGame() {
@@ -78,7 +68,6 @@ public class RubiksGame implements GameLogic {
         cameraInc = new Vector3f(0,0,0);
         cameraRotInc = new Vector3f(0,0,0);
         pieceManager = new PieceManager();
-        gameItems = new GameItem[1];
     }
 
 
@@ -154,8 +143,6 @@ public class RubiksGame implements GameLogic {
 
             Coordinate c = coordIterator.next();
             pieceManager.addPiece(center,c.x,c.y,c.z);
-
-            moving.add(center);
         }
 
         Piece center1 = CenterPiece.createCenterPiece(Piece.ORANGE);
@@ -181,7 +168,6 @@ public class RubiksGame implements GameLogic {
             edge.setPosition(0,0,-2);
             edge.setRotationDegrees(0,0,90*i);
             itemList.add(edge);
-            if ((i % 2)!=0) moving.add(edge);
             Coordinate c = coordIterator.next();
             pieceManager.addPiece(edge,c.x,c.y,c.z);
         }
@@ -190,7 +176,6 @@ public class RubiksGame implements GameLogic {
             edge.setPosition(0,0,-2);
             edge.addRotation(180,0,0);
             edge.addRotation(0,0,90*i);
-            if ((i % 2)!=0) moving.add(edge);
             itemList.add(edge);
             Coordinate c = coordIterator.next();
             pieceManager.addPiece(edge,c.x,c.y,c.z);
@@ -241,13 +226,6 @@ public class RubiksGame implements GameLogic {
     public void input(MainWindow mainWindow) {
         cameraInc.set(0, 0, 0);
         cameraRotInc.set(0,0,0);
-
-
-        rotateXDirection = 0;
-        rotateYDirection = 0;
-        rotateZDirection = 0;
-
-        scaleInc = 0;
 
         if (!inManeuver) {
 
@@ -318,65 +296,49 @@ public class RubiksGame implements GameLogic {
         } else if (mainWindow.isKeyPressed(GLFW_KEY_V)) {
             cameraRotInc.x = 1;
         }
-        if (mainWindow.isKeyPressed(GLFW_KEY_T)) {
-            pieceManager.getPiece(randGen.nextInt(2), randGen.nextInt(2), randGen.nextInt(2)).setPosition(randGen.nextInt(3), randGen.nextInt(3), -randGen.nextInt(3));
+        if (mainWindow.isKeyPressed(GLFW_KEY_Y)) {
+
+            if (!wireframe && !wireframeMod) {
+                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+                wireframe = true;
+                wireframeMod = true;
+            }
+            else if (!wireframeMod){
+                glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+                wireframe = false;
+                wireframeMod = true;
+            }
+        }
+        else if (mainWindow.isKeyReleased(GLFW_KEY_Y)) {
+            wireframeMod = false;
         }
 
-
-
-
-
-
-        /*
-        displyInc = 0;
-        displxInc = 0;
-        displzInc = 0;
-        scaleInc = 0;
-
-        if (mainWindow.isKeyPressed(GLFW_KEY_UP)) {
-            displyInc = 1;
-        } else if (mainWindow.isKeyPressed(GLFW_KEY_DOWN)) {
-            displyInc = -1;
-        } else if (mainWindow.isKeyPressed(GLFW_KEY_LEFT)) {
-            displxInc = -1;
-        } else if (mainWindow.isKeyPressed(GLFW_KEY_RIGHT)) {
-            displxInc = 1;
-        } else if (mainWindow.isKeyPressed(GLFW_KEY_A)) {
-            displzInc = -1;
-        } else if (mainWindow.isKeyPressed(GLFW_KEY_Q)) {
-            displzInc = 1;
+        if (mainWindow.isKeyPressed(GLFW_KEY_H)) {
+            if (!culling && !cullingMod) {
+                glEnable(GL_CULL_FACE);
+                glCullFace(GL_BACK);
+                culling = true;
+                cullingMod = true;
+            }
+            else if (!cullingMod) {
+                glDisable(GL_CULL_FACE);
+                culling = false;
+                cullingMod = true;
+            }
         }
-        if (mainWindow.isKeyPressed(GLFW_KEY_T)) {
-            pieceManager.getPiece(1,0,1).setPosition(0,1,-2);
-        }*/
+        else if (mainWindow.isKeyReleased(GLFW_KEY_H)) cullingMod = false;
+
+        if (mainWindow.isKeyPressed(GLFW_KEY_LEFT_SHIFT)) {
+            if (!slowedCameraMod) {
+                slowedCamera = !slowedCamera;
+                slowedCameraMod = true;
+            }
+
+        }
+        else if (mainWindow.isKeyReleased(GLFW_KEY_LEFT_SHIFT)) slowedCameraMod = false;
 
 
-        if (mainWindow.isKeyPressed(GLFW_KEY_UP)) {
-            scaleInc = -1;
-        } else if (mainWindow.isKeyPressed(GLFW_KEY_DOWN)) {
-            scaleInc = 1;
-        }
 
-        /*
-        if (mainWindow.isKeyPressed(GLFW_KEY_I)) {
-            rotateXDirection = 1;
-        } else
-        if (mainWindow.isKeyPressed(GLFW_KEY_K)) {
-            rotateXDirection = -1;
-        }
-        if (mainWindow.isKeyPressed(GLFW_KEY_J)) {
-            rotateYDirection = 1;
-        } else
-        if (mainWindow.isKeyPressed(GLFW_KEY_L)) {
-            rotateYDirection = -1;
-        }
-        if (mainWindow.isKeyPressed(GLFW_KEY_P)) {
-            rotateZDirection = 1;
-        } else
-        if (mainWindow.isKeyPressed(GLFW_KEY_SEMICOLON)) {
-            rotateZDirection = -1;
-        }
-        */
 
         if (mainWindow.getShouldCameraReset()) {
             camera.setPosition(0,0,0);
@@ -388,19 +350,22 @@ public class RubiksGame implements GameLogic {
     @Override
     public void update(float interval) {
 
-        camera.movePosition(cameraInc.x * CAMERA_POS_STEP, cameraInc.y * CAMERA_POS_STEP, cameraInc.z * CAMERA_POS_STEP);
-        camera.moveRotation(cameraRotInc.x * CAMERA_ROT_STEP, cameraRotInc.y * CAMERA_ROT_STEP, 0);
+        if (!slowedCamera) {
+            camera.movePosition(cameraInc.x * CAMERA_POS_STEP, cameraInc.y * CAMERA_POS_STEP, cameraInc.z * CAMERA_POS_STEP);
+            camera.moveRotation(cameraRotInc.x * CAMERA_ROT_STEP, cameraRotInc.y * CAMERA_ROT_STEP, 0);
+
+        }
+        else {
+            camera.movePosition(cameraInc.x * CAMERA_POS_STEP * 0.15f, cameraInc.y * CAMERA_POS_STEP * 0.15f, cameraInc.z * CAMERA_POS_STEP * 0.15f);
+            camera.moveRotation(cameraRotInc.x * CAMERA_ROT_STEP * 0.45f, cameraRotInc.y * CAMERA_ROT_STEP * 0.45f, 0);
+        }
+
 
         if (stepsLeft==0) {
             inManeuver = false;
         }
 
         if (inManeuver) {
-
-            /*
-            for (Piece piece : piecesInManeuver) {
-                piece.addRotation(maneuverMultiplier);
-            }*/
 
             piecesInManeuver.stream().forEach(piece -> {
                 //if (piece==null) System.out.println("Piece is alread null");
@@ -409,22 +374,6 @@ public class RubiksGame implements GameLogic {
 
             stepsLeft--;
         }
-
-        /*
-        for (GameItem gameItem : moving) {
-
-            // Update scale
-            float scale = gameItem.getScale();
-            scale += scaleInc * 0.05f;
-            if ( scale < 0 ) {
-                scale = 0;
-            }
-            gameItem.setScale(scale);
-
-
-            // Update rotations
-            gameItem.addRotation(1.5f * rotateXDirection, 1.5f * rotateYDirection, 1.5f * rotateZDirection);
-        }*/
     }
 
     @Override
