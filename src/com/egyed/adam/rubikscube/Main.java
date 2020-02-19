@@ -21,7 +21,7 @@ public class Main {
             GameLogic gameLogic = new RubiksGame();
 
             // Construct the Game Engine with the game logic defined by 'gameLogic', an instance of RubiksGame
-            GameEngine gameEngine = new GameEngine("Rubik's Cube", 600, 480, true, gameLogic);
+            GameEngine gameEngine = new GameEngine("Rubik's Cube", 1200, 960, true, gameLogic);
 
             gameEngine.start();
 
